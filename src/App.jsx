@@ -38,11 +38,9 @@ function Panel({ title, children }){
           <button onClick={() => setIsActive(false)}>Hide</button>
           {children}
         </form>
-        
       ) : (
         <button onClick={() => setIsActive(true)}>Show</button>
       )}
-
     </section>
   )
 }
@@ -76,7 +74,6 @@ function Education() {
 
 function Experience() {
   return(
-
     <Panel title="Experience">
       <Input title='Company Name' placeholder='Google'/>
       <Input title='Position Title' placeholder='Full Stack Developer'/>
@@ -86,7 +83,6 @@ function Experience() {
       <TextAreaInput title='Description' placeholder=''/>
       <SubmitButton />
     </Panel>
-
   )
 }
 
@@ -96,34 +92,30 @@ function Sidebar() {
       <PersonalDetails />
       <Education />
       <Experience />
-
     </div>
   )
 }
 
-function Resume(){
+function Resume({fullName}){
   return(
     <div className='resume'>
-      
+      <p>{fullName}</p>
     </div>
-  )
-}
-
-function FullPage(){
-
-  const [text, setText] = useState('');
-
-  return(
-    <>
-      <Sidebar />
-      <Resume />
-    </>
   )
 }
 
 function App() {
-  return FullPage()
+  const [fullName, setFullName] = useState('test');
 
+
+
+  return(
+    <>
+      <Sidebar/>
+      <Resume
+        fullName={fullName} />
+    </>
+  )
 }
 
 export default App
