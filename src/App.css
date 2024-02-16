@@ -19,3 +19,12 @@ form {
   flex-direction: column;
   align-items: flex-start;
 }
+
+.personalDetails {
+  background-color: #0e374e;
+  color: white;
+}
+
+.personalDetails > p {
+  margin: 0;
+}
