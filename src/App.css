@@ -27,4 +27,32 @@ form {
 
 .personalDetails > p {
   margin: 0;
+  text-align: center;
 }
+
+.fullName {
+  padding-bottom: 12px;
+  padding-top: 24px;
+  font-size: 48px;
+  font-weight: bold;
+}
+
+.contactInfo {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  padding-bottom: 24px;
+
+}
+
+/* .email::before{
+  content: ' ✉️ ';
+}
+
+.phoneNumber::before{
+  content: ' 📞 ';
+}
+
+.address::before{
+  content: ' 🏠 ';
+} */
