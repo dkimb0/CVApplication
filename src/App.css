@@ -45,6 +45,10 @@ form {
 
 }
 
+ul {
+  list-style-type: none;
+}
+
 /* .email::before{
   content: ' ✉️ ';
 }
