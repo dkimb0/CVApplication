@@ -49,6 +49,41 @@ ul {
   list-style-type: none;
 }
 
+.resumeSectionHeader{
+  text-align: center;
+}
+
+.education-school-degree{
+  display: flex;
+  flex-direction: column;
+}
+
+.education-date-location{
+  display: flex;
+  width: 200px;
+  flex-direction: column;
+}
+
+.education-item{
+  display: flex;
+  flex-direction: row;
+  padding-bottom: 1rem;
+}
+
+.education-school{
+  font-weight: 900;
+}
+
+.panel-items{
+  padding-left: 0;
+}
+
+.panel-item-btns > button{
+  height: auto;
+  text-align: center;
+  margin-right: 0.5rem;
+}
+
 /* .email::before{
   content: ' ✉️ ';
 }

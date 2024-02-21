@@ -1,66 +1,6 @@
 import { useState } from 'react'
 import './App.css'
 
-
-function EducationPanel({ children, education, setEducation, addEducation,
-  deleteEducationItem, submitEdit, educationArray }){
-  const [formActive, setFormActive] = useState(false);
-  const [formEdit, setFormEdit] = useState(false);
-  const [indexOfEdit, setIndexOfEdit] = useState(0)
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if(formEdit){
-      submitEdit(indexOfEdit);
-    }else{
-      addEducation(education);
-    }
-    setEducation([]);
-    setFormActive(false);
-  }
-  
-  return(
-    <section className='panel'>
-      <h1>Education</h1>
-
-      {formActive ? (
-        <form onSubmit={handleSubmit}>
-          {children}
-          <button type='submit'>Save</button>
-          <button onClick={() => {
-            setFormActive(false);
-            setEducation([]);
-            }}>Cancel</button>
-        </form>    
-      ) : (
-        <>
-          <ul>
-            {educationArray.map(education => {
-              return(
-                  <li key={education.idForm}>
-                    <span>{education.school}</span>
-                    <button onClick={() => {
-                      setFormEdit(true);
-                      const index = educationArray.findIndex(edu => edu.idForm === education.idForm);
-                      setIndexOfEdit(index)
-                      setEducation(educationArray[index]);
-                      setFormActive(true);
-                    }}>🖊️</button>
-                    <button onClick={() => deleteEducationItem(education.idForm)}>X</button>
-                  </li>
-              )
-            })}
-          </ul>
-          <button onClick={() => {
-            setFormEdit(false);
-            setFormActive(true);
-            }}>+ Education</button>
-        </>
-      )}
-    </section>
-  )
-}
-
 function Panel({ title, children, item, setItem, addItem,
   deleteItem, submitEdit, itemArray }){
   const [formActive, setFormActive] = useState(false);
@@ -93,19 +33,21 @@ function Panel({ title, children, item, setItem, addItem,
         </form>    
       ) : (
         <>
-          <ul>
+          <ul className='panel-items'>
             {itemArray.map(item => {
               return(
                   <li key={item.idForm}>
                     <span>{item.school || item.company}</span>
-                    <button onClick={() => {
-                      setFormEdit(true);
-                      const index = itemArray.findIndex(it => it.idForm === item.idForm);
-                      setIndexOfEdit(index)
-                      setItem(itemArray[index]);
-                      setFormActive(true);
-                    }}>🖊️</button>
-                    <button onClick={() => deleteItem(item.idForm)}>X</button>
+                    <div className='panel-item-btns'>
+                      <button onClick={() => {
+                        setFormEdit(true);
+                        const index = itemArray.findIndex(it => it.idForm === item.idForm);
+                        setIndexOfEdit(index)
+                        setItem(itemArray[index]);
+                        setFormActive(true);
+                      }}>Edit</button>
+                      <button onClick={() => deleteItem(item.idForm)}>Delete</button>
+                    </div>
                   </li>
               )
             })}
@@ -114,65 +56,6 @@ function Panel({ title, children, item, setItem, addItem,
             setFormEdit(false);
             setFormActive(true);
             }}>+ {title}</button>
-        </>
-      )}
-    </section>
-  )
-}
-
-function ExperiencePanel({ children, experience, setExperience, addExperience,
-  deleteExperienceItem, submitExperienceEdit, experienceArray }){
-  const [formActive, setFormActive] = useState(false);
-  const [formEdit, setFormEdit] = useState(false);
-  const [indexOfEdit, setIndexOfEdit] = useState(0)
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if(formEdit){
-      submitExperienceEdit(indexOfEdit);
-    }else{
-      addExperience(experience);
-    }
-    setExperience([]);
-    setFormActive(false);
-  }
-  
-  return(
-    <section className='panel'>
-      <h1>Experience</h1>
-
-      {formActive ? (
-        <form onSubmit={handleSubmit}>
-          {children}
-          <button type='submit'>Save</button>
-          <button onClick={() => {
-            setFormActive(false);
-            setExperience([]);
-            }}>Cancel</button>
-        </form>    
-      ) : (
-        <>
-          <ul>
-            {experienceArray.map(experience => {
-              return(
-                  <li key={experience.idForm}>
-                    <span>{experience.school}</span>
-                    <button onClick={() => {
-                      setFormEdit(true);
-                      const index = experienceArray.findIndex(exp => exp.idForm === experience.idForm);
-                      setIndexOfEdit(index)
-                      setExperience(experienceArray[index]);
-                      setFormActive(true);
-                    }}>🖊️</button>
-                    <button onClick={() => deleteExperienceItem(experience.idForm)}>X</button>
-                  </li>
-              )
-            })}
-          </ul>
-          <button onClick={() => {
-            setFormEdit(false);
-            setFormActive(true);
-            }}>+ Experience</button>
         </>
       )}
     </section>
@@ -193,14 +76,18 @@ function Resume({fullName, email, phoneNumber, address, educationArray}){
       </header>
       
       <ul className='education'>
+        {educationArray.length > 0 && <h2 className='resumeSectionHeader'>Education</h2>}
         {educationArray.map(education => {
           return(
-            <li key={education.idResume}>
-              <span>{education.school}</span>
-              <span>{education.degree}</span>
-              <span>{education.location}</span>
-              <span>{education.startDate}</span>
-              <span>{education.endDate}</span>
+            <li className='education-item' key={education.idResume}>
+              <div className='education-date-location'>
+                <span>{education.startDate} - {education.endDate}</span>
+                <span>{education.location}</span>
+              </div>
+              <div className='education-school-degree'>
+                <span className='education-school'>{education.school}</span>
+                <span>{education.degree}</span>
+              </div>
             </li>
           )
         })}
@@ -218,7 +105,6 @@ export default function App() {
     address: ''});
   const [educationArray, setEducationArray] = useState([]);
   const [education, setEducation] = useState({});
-
   const [experienceArray, setExperienceArray] = useState([]);
   const [experience, setExperience] = useState({});
 
@@ -301,31 +187,6 @@ export default function App() {
           </form>
         </section>
 
-        {/* <EducationPanel education={education} setEducation={setEducation} addEducation={addEducation}
-          deleteEducationItem={deleteEducationItem} submitEducationEdit={submitEducationEdit}
-          educationArray ={educationArray}>
-          <label htmlFor='school'>School</label>
-          <input type='text' id='school' name='school' placeholder='Columbia University'
-            onChange={handleEducationChange} defaultValue={education.school || ''}
-          />
-          <label htmlFor='degree'>Degree</label>
-          <input type='text' id="degree" name="degree" placeholder='Software Engineering'
-            onChange = {handleEducationChange} defaultValue={education.degree || ''}
-          />
-          <label htmlFor='location'>Location</label>
-          <input type='text' id='location' name='location' placeholder='New York'
-            onChange = {handleEducationChange} defaultValue={education.location || ''}
-          />
-          <label htmlFor='startDate'>Start Date</label>
-          <input type='text' id='startDate' name='startDate' placeholder='mm/yyyy'
-            onChange = {handleEducationChange} defaultValue={education.startDate || ''}
-          />
-          <label htmlFor='endDate'>End Date</label>
-          <input type='text' id='endDate' name='endDate' placeholder='mm/yyyy'
-            onChange = {handleEducationChange} defaultValue={education.endDate || ''}
-          />
-        </EducationPanel> */}
-
         <Panel title = {'Education'} item={education} setItem={setEducation} addItem={addEducation}
           deleteItem={deleteEducationItem} submitEdit={submitEducationEdit}
           itemArray ={educationArray}>
@@ -380,8 +241,6 @@ export default function App() {
             onChange={handleExperienceChange} defaultValue={experience.description || ''}
           />
         </Panel>
-
-
 
       </div>
 
