@@ -2,17 +2,16 @@ import { useState } from 'react'
 import './App.css'
 
 
-function Panel({ title, children, education, setEducation, addEducation, inputArray, deleteItem, handleEdit, educationArray }){
-  const [isActive, setIsActive] = useState(false);
+function EducationPanel({ children, education, setEducation, addEducation,
+  deleteEducationItem, submitEdit, educationArray }){
   const [formActive, setFormActive] = useState(false);
   const [formEdit, setFormEdit] = useState(false);
   const [indexOfEdit, setIndexOfEdit] = useState(0)
 
-  const handleEducationSubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     if(formEdit){
-      handleEdit(indexOfEdit);
-      
+      submitEdit(indexOfEdit);
     }else{
       addEducation(education);
     }
@@ -22,9 +21,10 @@ function Panel({ title, children, education, setEducation, addEducation, inputAr
   
   return(
     <section className='panel'>
-      <h1>{title}</h1>
+      <h1>Education</h1>
+
       {formActive ? (
-        <form onSubmit={handleEducationSubmit}>
+        <form onSubmit={handleSubmit}>
           {children}
           <button type='submit'>Save</button>
           <button onClick={() => {
@@ -35,7 +35,7 @@ function Panel({ title, children, education, setEducation, addEducation, inputAr
       ) : (
         <>
           <ul>
-            {inputArray.map(education => {
+            {educationArray.map(education => {
               return(
                   <li key={education.idForm}>
                     <span>{education.school}</span>
@@ -46,7 +46,7 @@ function Panel({ title, children, education, setEducation, addEducation, inputAr
                       setEducation(educationArray[index]);
                       setFormActive(true);
                     }}>🖊️</button>
-                    <button onClick={() => deleteItem(education.idForm)}>🗑️</button>
+                    <button onClick={() => deleteEducationItem(education.idForm)}>X</button>
                   </li>
               )
             })}
@@ -57,18 +57,124 @@ function Panel({ title, children, education, setEducation, addEducation, inputAr
             }}>+ Education</button>
         </>
       )}
-      
+    </section>
+  )
+}
 
-      {/* {isActive ? (
-        <form onSubmit={handleEducationSubmit}>
-          <button onClick={() => setIsActive(false)}>Hide</button>
+function Panel({ title, children, item, setItem, addItem,
+  deleteItem, submitEdit, itemArray }){
+  const [formActive, setFormActive] = useState(false);
+  const [formEdit, setFormEdit] = useState(false);
+  const [indexOfEdit, setIndexOfEdit] = useState(0)
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if(formEdit){
+      submitEdit(indexOfEdit);
+    }else{
+      addItem(item);
+    }
+    setItem([]);
+    setFormActive(false);
+  }
+  
+  return(
+    <section className='panel'>
+      <h1>{title}</h1>
+
+      {formActive ? (
+        <form onSubmit={handleSubmit}>
           {children}
-          <button type='submit'>Submit</button>
-        </form>
+          <button type='submit'>Save</button>
+          <button onClick={() => {
+            setFormActive(false);
+            setItem([]);
+            }}>Cancel</button>
+        </form>    
       ) : (
-        <button onClick={()
-           => setIsActive(true)}>Show</button>
-      )} */}
+        <>
+          <ul>
+            {itemArray.map(item => {
+              return(
+                  <li key={item.idForm}>
+                    <span>{item.school || item.company}</span>
+                    <button onClick={() => {
+                      setFormEdit(true);
+                      const index = itemArray.findIndex(it => it.idForm === item.idForm);
+                      setIndexOfEdit(index)
+                      setItem(itemArray[index]);
+                      setFormActive(true);
+                    }}>🖊️</button>
+                    <button onClick={() => deleteItem(item.idForm)}>X</button>
+                  </li>
+              )
+            })}
+          </ul>
+          <button onClick={() => {
+            setFormEdit(false);
+            setFormActive(true);
+            }}>+ {title}</button>
+        </>
+      )}
+    </section>
+  )
+}
+
+function ExperiencePanel({ children, experience, setExperience, addExperience,
+  deleteExperienceItem, submitExperienceEdit, experienceArray }){
+  const [formActive, setFormActive] = useState(false);
+  const [formEdit, setFormEdit] = useState(false);
+  const [indexOfEdit, setIndexOfEdit] = useState(0)
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if(formEdit){
+      submitExperienceEdit(indexOfEdit);
+    }else{
+      addExperience(experience);
+    }
+    setExperience([]);
+    setFormActive(false);
+  }
+  
+  return(
+    <section className='panel'>
+      <h1>Experience</h1>
+
+      {formActive ? (
+        <form onSubmit={handleSubmit}>
+          {children}
+          <button type='submit'>Save</button>
+          <button onClick={() => {
+            setFormActive(false);
+            setExperience([]);
+            }}>Cancel</button>
+        </form>    
+      ) : (
+        <>
+          <ul>
+            {experienceArray.map(experience => {
+              return(
+                  <li key={experience.idForm}>
+                    <span>{experience.school}</span>
+                    <button onClick={() => {
+                      setFormEdit(true);
+                      const index = experienceArray.findIndex(exp => exp.idForm === experience.idForm);
+                      setIndexOfEdit(index)
+                      setExperience(experienceArray[index]);
+                      setFormActive(true);
+                    }}>🖊️</button>
+                    <button onClick={() => deleteExperienceItem(experience.idForm)}>X</button>
+                  </li>
+              )
+            })}
+          </ul>
+          <button onClick={() => {
+            setFormEdit(false);
+            setFormActive(true);
+            }}>+ Experience</button>
+        </>
+      )}
     </section>
   )
 }
@@ -113,6 +219,9 @@ export default function App() {
   const [educationArray, setEducationArray] = useState([]);
   const [education, setEducation] = useState({});
 
+  const [experienceArray, setExperienceArray] = useState([]);
+  const [experience, setExperience] = useState({});
+
   function addEducation(education){
     setEducationArray(currentEducationArray => {
       return [
@@ -121,24 +230,51 @@ export default function App() {
     })
   }
 
-  const handleChange = (e) => {
+  const handleEducationChange = (e) => {
     const {name, value} = e.target;
     setEducation(currentEducation => ({...currentEducation, [name]: value}));
   }
 
-  const deleteItem = (id) => {
+  const deleteEducationItem = (id) => {
     setEducationArray(currentArray => {
       return currentArray.filter(item => item.idForm !== id);
     })
   }
 
-  const handleEdit = (index) => {
+  const submitEducationEdit = (index) => {
     setEducationArray(currentEducationArray => {
       currentEducationArray[index] = { ...education, idResume:crypto.randomUUID(), idForm: crypto.randomUUID() };
       return currentEducationArray
     })
-    // setEducation([]);
   }
+
+  function addExperience(experience){
+    setExperienceArray(currentExperienceArray => {
+      return [
+        ...currentExperienceArray,  {...experience, idResume: crypto.randomUUID(), idForm: crypto.randomUUID()}
+      ]
+    })
+  }
+
+  const handleExperienceChange = (e) => {
+    const {name, value} = e.target;
+    setExperience(currentExperience => ({...currentExperience, [name]: value}));
+  }
+
+  const deleteExperienceItem = (id) => {
+    setExperienceArray(currentArray => {
+      return currentArray.filter(item => item.idForm !== id);
+    })
+  }
+
+  const submitExperienceEdit = (index) => {
+    setExperienceArray(currentExperienceArray => {
+      currentExperienceArray[index] = { ...experience, idResume:crypto.randomUUID(), idForm: crypto.randomUUID() };
+      return currentExperienceArray
+    })
+  }
+
+
 
 
   return(
@@ -165,40 +301,88 @@ export default function App() {
           </form>
         </section>
 
-        <Panel title='Education' education={education} setEducation={setEducation} addEducation={addEducation}
-          inputArray={educationArray} deleteItem={deleteItem} handleEdit={handleEdit} educationArray ={educationArray}>
+        {/* <EducationPanel education={education} setEducation={setEducation} addEducation={addEducation}
+          deleteEducationItem={deleteEducationItem} submitEducationEdit={submitEducationEdit}
+          educationArray ={educationArray}>
           <label htmlFor='school'>School</label>
           <input type='text' id='school' name='school' placeholder='Columbia University'
-            onChange={handleChange} defaultValue={education.school || ''}
+            onChange={handleEducationChange} defaultValue={education.school || ''}
           />
           <label htmlFor='degree'>Degree</label>
           <input type='text' id="degree" name="degree" placeholder='Software Engineering'
-            onChange = {handleChange} defaultValue={education.degree || ''}
+            onChange = {handleEducationChange} defaultValue={education.degree || ''}
           />
           <label htmlFor='location'>Location</label>
           <input type='text' id='location' name='location' placeholder='New York'
-            onChange = {handleChange} defaultValue={education.location || ''}
+            onChange = {handleEducationChange} defaultValue={education.location || ''}
           />
           <label htmlFor='startDate'>Start Date</label>
           <input type='text' id='startDate' name='startDate' placeholder='mm/yyyy'
-            onChange = {handleChange} defaultValue={education.startDate || ''}
+            onChange = {handleEducationChange} defaultValue={education.startDate || ''}
           />
           <label htmlFor='endDate'>End Date</label>
           <input type='text' id='endDate' name='endDate' placeholder='mm/yyyy'
-            onChange = {handleChange} defaultValue={education.endDate || ''}
+            onChange = {handleEducationChange} defaultValue={education.endDate || ''}
+          />
+        </EducationPanel> */}
+
+        <Panel title = {'Education'} item={education} setItem={setEducation} addItem={addEducation}
+          deleteItem={deleteEducationItem} submitEdit={submitEducationEdit}
+          itemArray ={educationArray}>
+          <label htmlFor='school'>School</label>
+          <input type='text' id='school' name='school' placeholder='Columbia University'
+            onChange={handleEducationChange} defaultValue={education.school || ''}
+          />
+          <label htmlFor='degree'>Degree</label>
+          <input type='text' id="degree" name="degree" placeholder='Software Engineering'
+            onChange = {handleEducationChange} defaultValue={education.degree || ''}
+          />
+          <label htmlFor='location'>Location</label>
+          <input type='text' id='location' name='location' placeholder='New York'
+            onChange = {handleEducationChange} defaultValue={education.location || ''}
+          />
+          <label htmlFor='startDate'>Start Date</label>
+          <input type='text' id='startDate' name='startDate' placeholder='mm/yyyy'
+            onChange = {handleEducationChange} defaultValue={education.startDate || ''}
+          />
+          <label htmlFor='endDate'>End Date</label>
+          <input type='text' id='endDate' name='endDate' placeholder='mm/yyyy'
+            onChange = {handleEducationChange} defaultValue={education.endDate || ''}
           />
         </Panel>
 
-        {/* <Panel title="Experience">
-          <label>Company Name</label>
-          <input title='Company Name' placeholder='Google'/>
-          <input title='Position Title' placeholder='Full Stack Developer'/>
-          <input title='Location' placeholder='New York'/>
-          <input title='Start Date' placeholder='mm/yyyy'/>
-          <input title='End Date' placeholder='mm/yyyy'/>      
-          <label>Description</label>
-          <textarea placeholder='Description' />
-        </Panel> */}
+        <Panel title={'Experience'} item={experience} setItem={setExperience} 
+        addItem={addExperience} deleteItem={deleteExperienceItem}
+        submitEdit={submitExperienceEdit} itemArray={experienceArray}>
+          <label htmlFor='company'>Company Name</label>
+          <input type='text' id='company' name='company' placeholder='Google'
+            onChange={handleExperienceChange} defaultValue={experience.company || ''}
+          />
+          <label htmlFor='position'>Position Title</label>
+          <input type='text' id='position' name='position' placeholder='Developer'
+            onChange={handleExperienceChange} defaultValue={experience.position || ''}
+          />
+          <label htmlFor='location'>Location</label>
+          <input type='text' id='location' name='location' placeholder='New York'
+            onChange={handleExperienceChange} defaultValue={experience.location || ''}
+          />
+          <label htmlFor='startDateExperience'>Start Date</label>
+          <input type='text' id='startDateExperience' name='startDateExperience' placeholder='mm/yyyy'
+            onChange={handleExperienceChange} defaultValue={experience.startDateExperience || ''}
+          />
+          <label htmlFor='endDateExperience'>End Date</label>
+          <input type='text' id='endDateExperience' name='endDateExperience' placeholder='mm/yyyy'
+            onChange={handleExperienceChange} defaultValue={experience.endDateExperience || ''}
+          />
+    
+          <label htmlFor='description'>Description</label>
+          <textarea id='description' name='description' placeholder='Description'
+            onChange={handleExperienceChange} defaultValue={experience.description || ''}
+          />
+        </Panel>
+
+
+
       </div>
 
 
