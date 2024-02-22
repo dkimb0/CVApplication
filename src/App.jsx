@@ -116,7 +116,7 @@ export default function App() {
             onChange = {handleEducationChange} defaultValue={education.degree || ''}
           />
           <label htmlFor='location'>Location</label>
-          <input type='text' id='location' name='location' placeholder='New York'
+          <input type='text' id='location' name='location' placeholder='New York, NY'
             onChange = {handleEducationChange} defaultValue={education.location || ''}
           />
           <label htmlFor='startDate'>Start Date</label>
@@ -141,7 +141,7 @@ export default function App() {
             onChange={handleExperienceChange} defaultValue={experience.position || ''}
           />
           <label htmlFor='location'>Location</label>
-          <input type='text' id='location' name='location' placeholder='New York'
+          <input type='text' id='location' name='location' placeholder='New York, NY'
             onChange={handleExperienceChange} defaultValue={experience.location || ''}
           />
           <label htmlFor='startDateExperience'>Start Date</label>

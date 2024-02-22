@@ -26,8 +26,8 @@ export default function Panel({ title, children,
         {formActive ? (
           <form onSubmit={handleSubmit}>
             {children}
-            <button type='submit'>Save</button>
-            <button onClick={() => {
+            <button className='form-btn' type='submit'>Save</button>
+            <button className='form-btn' onClick={() => {
               setFormActive(false);
               setItem([]);
               }}>Cancel</button>
