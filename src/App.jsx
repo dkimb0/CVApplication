@@ -1,121 +1,7 @@
 import { useState, useEffect } from 'react'
 import './App.css'
-
-function Panel({ title, children,
-  item, setItem, itemArray, setItemArray,
-  addItem, deleteItem, submitEdit }){
-    
-  const [formActive, setFormActive] = useState(false);
-  const [formEdit, setFormEdit] = useState(false);
-  const [indexOfEdit, setIndexOfEdit] = useState(0)
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if(formEdit){
-      submitEdit(indexOfEdit, item, setItemArray);
-    }else{
-      addItem(item, setItemArray);
-    }
-    setItem([]);
-    setFormActive(false);
-  }
-  
-  return(
-    <section className='panel'>
-      <h2>{title}</h2>
-
-      {formActive ? (
-        <form onSubmit={handleSubmit}>
-          {children}
-          <button type='submit'>Save</button>
-          <button onClick={() => {
-            setFormActive(false);
-            setItem([]);
-            }}>Cancel</button>
-        </form>    
-      ) : (
-        <>
-          <ul className='panel-items'>
-            {itemArray.map(item => {
-              return(
-                  <li className='panel-item' key={item.idForm}>
-                    <p className='panel-item-title'>{item.school || item.company}</p>
-                    <div className='panel-item-btns'>
-                      <button onClick={() => {
-                        setFormEdit(true);
-                        const index = itemArray.findIndex(it => it.idForm === item.idForm);
-                        setIndexOfEdit(index)
-                        setItem(itemArray[index]);
-                        setFormActive(true);
-                      }}>Edit</button>
-                      <button onClick={() => deleteItem(item.idForm, setItemArray)}>X</button>
-                    </div>
-                  </li>
-              )
-            })}
-          </ul>
-          <button onClick={() => {
-            setFormEdit(false);
-            setFormActive(true);
-            }}>+ {title}</button>
-        </>
-      )}
-    </section>
-  )
-}
-
-function Resume({personalDetails, educationArray, experienceArray}){
-  return(
-    <div className='resume'>
-      <header className='personalDetails'>
-        <p className='fullName'>{personalDetails.fullName}</p>
-        <section className='contactInfo'>
-          <span className='email'>{personalDetails.email}</span>
-          <span className='phoneNumber'>{personalDetails.phoneNumber}</span>
-          <span className='address'>{personalDetails.address}</span>
-        </section>
-
-      </header>
-      
-      {educationArray.length > 0 && <h2 className='resumeSectionHeader'>Education</h2>}
-      <ul className='resumeSection'>
-        {educationArray.map(education => {
-          return(
-            <li className='resume-item' key={education.idResume}>
-              <div className='date-location'>
-                <p>{education.startDate} - {education.endDate}</p>
-                <p>{education.location}</p>
-              </div>
-              <div className='item-main-details'>
-                <p className='item-detail-bold'>{education.school}</p>
-                <p>{education.degree}</p>
-              </div>
-            </li>
-          )
-        })}
-      </ul>
-      
-      {experienceArray.length > 0 && <h2 className='resumeSectionHeader'>Experience</h2>}
-      <ul className='resumeSection'>
-          {experienceArray.map(experience => {
-            return(
-              <li className='resume-item' key={experience.idResume}>
-                <div className='date-location'>
-                  <p>{experience.startDateExperience} - {experience.endDateExperience}</p>
-                  <p>{experience.location}</p>
-                </div>
-                <div className='item-main-details'>
-                  <p className='item-detail-bold'>{experience.company}</p>
-                  <p>{experience.position}</p>
-                  <p>{experience.description}</p>
-                </div>
-              </li>
-            )
-        })}
-      </ul>
-    </div>
-  )
-}
+import Panel from './components/Panel'
+import Resume from './components/Resume'
 
 export default function App() {
   const [personalDetails, setPersonalDetails] = useState( () => {
@@ -123,7 +9,6 @@ export default function App() {
     if(localValue === null) return {};
     return JSON.parse(localValue);
   });
-
   const [educationArray, setEducationArray] = useState(() => {
     const localValue = localStorage.getItem('educationArray');
     if(localValue === null) return [];
@@ -139,7 +24,6 @@ export default function App() {
     if(localValue === null) return [];
     return JSON.parse(localValue);
   });
-
   const [experience, setExperience] = useState(() => {
     const localValue = localStorage.getItem('experience');
     if(localValue === null) return {};
@@ -149,19 +33,15 @@ export default function App() {
   useEffect(()=> {
     localStorage.setItem("personalDetails", JSON.stringify(personalDetails))
   }, [personalDetails]);
-
   useEffect(() => {
     localStorage.setItem('educationArray', JSON.stringify(educationArray))
   }, [educationArray]);
-
   useEffect(() => {
     localStorage.setItem('education', JSON.stringify(education))
   }, [education]);
-
   useEffect(() => {
     localStorage.setItem('experienceArray', JSON.stringify(experienceArray))
   }, [experienceArray]);
-
   useEffect(() => {
     localStorage.setItem('experience', JSON.stringify(experience))
   }, [experience]);
@@ -240,11 +120,11 @@ export default function App() {
             onChange = {handleEducationChange} defaultValue={education.location || ''}
           />
           <label htmlFor='startDate'>Start Date</label>
-          <input type='text' id='startDate' name='startDate' placeholder='mm/yyyy'
+          <input type='text' id='startDate' name='startDate' placeholder='Jan 2020'
             onChange = {handleEducationChange} defaultValue={education.startDate || ''}
           />
           <label htmlFor='endDate'>End Date</label>
-          <input type='text' id='endDate' name='endDate' placeholder='mm/yyyy'
+          <input type='text' id='endDate' name='endDate' placeholder='Feb 2024'
             onChange = {handleEducationChange} defaultValue={education.endDate || ''}
           />
         </Panel>
@@ -265,11 +145,11 @@ export default function App() {
             onChange={handleExperienceChange} defaultValue={experience.location || ''}
           />
           <label htmlFor='startDateExperience'>Start Date</label>
-          <input type='text' id='startDateExperience' name='startDateExperience' placeholder='mm/yyyy'
+          <input type='text' id='startDateExperience' name='startDateExperience' placeholder='Jan 2020'
             onChange={handleExperienceChange} defaultValue={experience.startDateExperience || ''}
           />
           <label htmlFor='endDateExperience'>End Date</label>
-          <input type='text' id='endDateExperience' name='endDateExperience' placeholder='mm/yyyy'
+          <input type='text' id='endDateExperience' name='endDateExperience' placeholder='Feb 2024'
             onChange={handleExperienceChange} defaultValue={experience.endDateExperience || ''}
           />
     
