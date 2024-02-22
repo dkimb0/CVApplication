@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import './App.css'
+import './styles/App.css'
 import Panel from './components/Panel'
 import Resume from './components/Resume'
 
@@ -84,7 +84,7 @@ export default function App() {
       <div className='sidebar'>
         
         <section>
-          <h2>Personal Details</h2>
+          <h2 className='panel-title'>Personal Details</h2>
           <form className='personalDetailsForm'>
             <label>Full Name</label>
             <input type="text" placeholder='John Doe' value = { personalDetails.fullName } 

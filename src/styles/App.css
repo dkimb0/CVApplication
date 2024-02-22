@@ -1,3 +1,5 @@
+
+
 #root {
   margin: 0 auto;
   padding: 2rem;
@@ -127,4 +129,17 @@ ul {
 
 .personalDetailsForm{
   padding-left: 0.5rem;
+}
+
+.add-btn{
+  margin-left: 3rem;
+}
+
+.panel-title{
+  margin-bottom: 0;
+}
+
+.panel-items,
+.personalDetailsForm{
+  margin-top: 0.5rem;
 }

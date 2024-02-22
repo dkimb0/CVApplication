@@ -21,7 +21,7 @@ export default function Panel({ title, children,
     
     return(
       <section className='panel'>
-        <h2>{title}</h2>
+        <h2 className="panel-title">{title}</h2>
   
         {formActive ? (
           <form onSubmit={handleSubmit}>
@@ -47,16 +47,16 @@ export default function Panel({ title, children,
                           setItem(itemArray[index]);
                           setFormActive(true);
                         }}>Edit</button>
-                        <button onClick={() => deleteItem(item.idForm, setItemArray)}>X</button>
+                        <button className='btn-danger' onClick={() => deleteItem(item.idForm, setItemArray)}>X</button>
                       </div>
                     </li>
                 )
               })}
             </ul>
-            <button onClick={() => {
-              setFormEdit(false);
-              setFormActive(true);
-              }}>+ {title}</button>
+                <button className='add-btn' onClick={() => {
+                setFormEdit(false);
+                setFormActive(true);
+                }}>+ {title}</button>
           </>
         )}
       </section>
