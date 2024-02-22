@@ -7,9 +7,9 @@
 }
 
 .resume {
-  min-width: 800px;
-  min-height: 1100px;
-  background-color: white;
+  width: 800px;
+  height: 1100px;
+  background-color: #ffffff;
   margin: 28px;
   color: black;
 }
@@ -53,24 +53,32 @@ ul {
   text-align: center;
 }
 
-.education-school-degree{
+.item-main-details{
   display: flex;
   flex-direction: column;
+  padding-right: 40px;
 }
 
-.education-date-location{
-  display: flex;
-  width: 200px;
-  flex-direction: column;
+.item-main-details > p{
+  margin: 0;
+  margin-bottom: 0.25rem;
 }
 
-.education-item{
+.date-location{
+  flex: 0 0 200px;
+}
+
+.date-location > p {
+  margin: 0;
+}
+
+.resume-item{
   display: flex;
   flex-direction: row;
   padding-bottom: 1rem;
 }
 
-.education-school{
+.item-detail-bold{
   font-weight: 900;
 }
 
@@ -78,20 +86,45 @@ ul {
   padding-left: 0;
 }
 
+.panel-item-btns{
+  display: flex;
+  justify-content: space-around;
+}
+
 .panel-item-btns > button{
   height: auto;
   text-align: center;
   margin-right: 0.5rem;
+  width: 4rem;
+  font-size: 0.75rem;
 }
 
-/* .email::before{
-  content: ' ✉️ ';
+.panel-item-title{
+  font-weight: 600;
+  font-size: 1rem;
+  margin: 0px 0.5rem 0.5rem 0.5rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: center;
 }
 
-.phoneNumber::before{
-  content: ' 📞 ';
+.sidebar{
+  min-width: 250px;
 }
 
-.address::before{
-  content: ' 🏠 ';
-} */
+.experience {
+  text-wrap: wrap;
+}
+
+.panel-item{
+  border: 1px solid #3B3B3B;
+  border-radius: 12px;
+  max-width: 200px;
+  /* text-align: center; */
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.personalDetailsForm{
+  padding-left: 0.5rem;
+}

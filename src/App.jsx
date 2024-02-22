@@ -1,8 +1,10 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
 
-function Panel({ title, children, item, setItem, addItem,
-  deleteItem, submitEdit, itemArray }){
+function Panel({ title, children,
+  item, setItem, itemArray, setItemArray,
+  addItem, deleteItem, submitEdit }){
+    
   const [formActive, setFormActive] = useState(false);
   const [formEdit, setFormEdit] = useState(false);
   const [indexOfEdit, setIndexOfEdit] = useState(0)
@@ -10,9 +12,9 @@ function Panel({ title, children, item, setItem, addItem,
   const handleSubmit = (e) => {
     e.preventDefault();
     if(formEdit){
-      submitEdit(indexOfEdit);
+      submitEdit(indexOfEdit, item, setItemArray);
     }else{
-      addItem(item);
+      addItem(item, setItemArray);
     }
     setItem([]);
     setFormActive(false);
@@ -20,7 +22,7 @@ function Panel({ title, children, item, setItem, addItem,
   
   return(
     <section className='panel'>
-      <h1>{title}</h1>
+      <h2>{title}</h2>
 
       {formActive ? (
         <form onSubmit={handleSubmit}>
@@ -36,8 +38,8 @@ function Panel({ title, children, item, setItem, addItem,
           <ul className='panel-items'>
             {itemArray.map(item => {
               return(
-                  <li key={item.idForm}>
-                    <span>{item.school || item.company}</span>
+                  <li className='panel-item' key={item.idForm}>
+                    <p className='panel-item-title'>{item.school || item.company}</p>
                     <div className='panel-item-btns'>
                       <button onClick={() => {
                         setFormEdit(true);
@@ -46,7 +48,7 @@ function Panel({ title, children, item, setItem, addItem,
                         setItem(itemArray[index]);
                         setFormActive(true);
                       }}>Edit</button>
-                      <button onClick={() => deleteItem(item.idForm)}>Delete</button>
+                      <button onClick={() => deleteItem(item.idForm, setItemArray)}>X</button>
                     </div>
                   </li>
               )
@@ -62,113 +64,148 @@ function Panel({ title, children, item, setItem, addItem,
   )
 }
 
-function Resume({fullName, email, phoneNumber, address, educationArray}){
+function Resume({personalDetails, educationArray, experienceArray}){
   return(
     <div className='resume'>
       <header className='personalDetails'>
-        <p className='fullName'>{fullName}</p>
+        <p className='fullName'>{personalDetails.fullName}</p>
         <section className='contactInfo'>
-          <span className='email'>{email}</span>
-          <span className='phoneNumber'>{phoneNumber}</span>
-          <span className='address'>{address}</span>
+          <span className='email'>{personalDetails.email}</span>
+          <span className='phoneNumber'>{personalDetails.phoneNumber}</span>
+          <span className='address'>{personalDetails.address}</span>
         </section>
 
       </header>
       
-      <ul className='education'>
-        {educationArray.length > 0 && <h2 className='resumeSectionHeader'>Education</h2>}
+      {educationArray.length > 0 && <h2 className='resumeSectionHeader'>Education</h2>}
+      <ul className='resumeSection'>
         {educationArray.map(education => {
           return(
-            <li className='education-item' key={education.idResume}>
-              <div className='education-date-location'>
-                <span>{education.startDate} - {education.endDate}</span>
-                <span>{education.location}</span>
+            <li className='resume-item' key={education.idResume}>
+              <div className='date-location'>
+                <p>{education.startDate} - {education.endDate}</p>
+                <p>{education.location}</p>
               </div>
-              <div className='education-school-degree'>
-                <span className='education-school'>{education.school}</span>
-                <span>{education.degree}</span>
+              <div className='item-main-details'>
+                <p className='item-detail-bold'>{education.school}</p>
+                <p>{education.degree}</p>
               </div>
             </li>
           )
         })}
       </ul>
       
-      <section className='experience'>
-      
-      </section>
+      {experienceArray.length > 0 && <h2 className='resumeSectionHeader'>Experience</h2>}
+      <ul className='resumeSection'>
+          {experienceArray.map(experience => {
+            return(
+              <li className='resume-item' key={experience.idResume}>
+                <div className='date-location'>
+                  <p>{experience.startDateExperience} - {experience.endDateExperience}</p>
+                  <p>{experience.location}</p>
+                </div>
+                <div className='item-main-details'>
+                  <p className='item-detail-bold'>{experience.company}</p>
+                  <p>{experience.position}</p>
+                  <p>{experience.description}</p>
+                </div>
+              </li>
+            )
+        })}
+      </ul>
     </div>
   )
 }
 
 export default function App() {
-  const [personalDetails, setPersonalDetails] = useState({fullName: '', email: '', phoneNumber: '',
-    address: ''});
-  const [educationArray, setEducationArray] = useState([]);
-  const [education, setEducation] = useState({});
-  const [experienceArray, setExperienceArray] = useState([]);
-  const [experience, setExperience] = useState({});
+  const [personalDetails, setPersonalDetails] = useState( () => {
+    const localValue = localStorage.getItem("personalDetails");
+    if(localValue === null) return {};
+    return JSON.parse(localValue);
+  });
 
-  function addEducation(education){
-    setEducationArray(currentEducationArray => {
-      return [
-        ...currentEducationArray,  {...education, idResume: crypto.randomUUID(), idForm: crypto.randomUUID()}
-      ]
-    })
-  }
+  const [educationArray, setEducationArray] = useState(() => {
+    const localValue = localStorage.getItem('educationArray');
+    if(localValue === null) return [];
+    return JSON.parse(localValue);
+  });
+  const [education, setEducation] = useState( () => {
+    const localValue = localStorage.getItem('education');
+    if(localValue === null) return {};
+    return JSON.parse(localValue);
+  });
+  const [experienceArray, setExperienceArray] = useState(()=> {
+    const localValue = localStorage.getItem('experienceArray');
+    if(localValue === null) return [];
+    return JSON.parse(localValue);
+  });
+
+  const [experience, setExperience] = useState(() => {
+    const localValue = localStorage.getItem('experience');
+    if(localValue === null) return {};
+    return JSON.parse(localValue);
+  });
+
+  useEffect(()=> {
+    localStorage.setItem("personalDetails", JSON.stringify(personalDetails))
+  }, [personalDetails]);
+
+  useEffect(() => {
+    localStorage.setItem('educationArray', JSON.stringify(educationArray))
+  }, [educationArray]);
+
+  useEffect(() => {
+    localStorage.setItem('education', JSON.stringify(education))
+  }, [education]);
+
+  useEffect(() => {
+    localStorage.setItem('experienceArray', JSON.stringify(experienceArray))
+  }, [experienceArray]);
+
+  useEffect(() => {
+    localStorage.setItem('experience', JSON.stringify(experience))
+  }, [experience]);
 
   const handleEducationChange = (e) => {
     const {name, value} = e.target;
     setEducation(currentEducation => ({...currentEducation, [name]: value}));
   }
-
-  const deleteEducationItem = (id) => {
-    setEducationArray(currentArray => {
-      return currentArray.filter(item => item.idForm !== id);
-    })
-  }
-
-  const submitEducationEdit = (index) => {
-    setEducationArray(currentEducationArray => {
-      currentEducationArray[index] = { ...education, idResume:crypto.randomUUID(), idForm: crypto.randomUUID() };
-      return currentEducationArray
-    })
-  }
-
-  function addExperience(experience){
-    setExperienceArray(currentExperienceArray => {
-      return [
-        ...currentExperienceArray,  {...experience, idResume: crypto.randomUUID(), idForm: crypto.randomUUID()}
-      ]
-    })
-  }
-
   const handleExperienceChange = (e) => {
     const {name, value} = e.target;
     setExperience(currentExperience => ({...currentExperience, [name]: value}));
   }
 
-  const deleteExperienceItem = (id) => {
-    setExperienceArray(currentArray => {
+
+  function addItem(item, setItemArray){
+    setItemArray(currentArray => {
+      return [
+        ...currentArray,  {...item, idResume: crypto.randomUUID(), idForm: crypto.randomUUID()}
+      ]
+    })
+  }
+
+  const deleteItem = (id, setItemArray) => {
+    setItemArray(currentArray => {
       return currentArray.filter(item => item.idForm !== id);
     })
   }
-
-  const submitExperienceEdit = (index) => {
-    setExperienceArray(currentExperienceArray => {
-      currentExperienceArray[index] = { ...experience, idResume:crypto.randomUUID(), idForm: crypto.randomUUID() };
-      return currentExperienceArray
+  
+  const submitEdit = (index, item, setItemArray) => {
+    setItemArray(currentArray => {
+      currentArray[index] = { ...item, idResume:crypto.randomUUID(), idForm: crypto.randomUUID() };
+      return currentArray
     })
   }
-
-
+  
 
 
   return(
     <>
-      <div>
-        <section className='panel'>
-          <h1>Personal Details</h1>
-          <form>
+      <div className='sidebar'>
+        
+        <section>
+          <h2>Personal Details</h2>
+          <form className='personalDetailsForm'>
             <label>Full Name</label>
             <input type="text" placeholder='John Doe' value = { personalDetails.fullName } 
               onChange={(e) => setPersonalDetails({...personalDetails, fullName: e.target.value})} />
@@ -187,9 +224,9 @@ export default function App() {
           </form>
         </section>
 
-        <Panel title = {'Education'} item={education} setItem={setEducation} addItem={addEducation}
-          deleteItem={deleteEducationItem} submitEdit={submitEducationEdit}
-          itemArray ={educationArray}>
+        <Panel title = {'Education'} item={education} setItem={setEducation}
+          itemArray ={educationArray} setItemArray={setEducationArray}
+          addItem={addItem} deleteItem={deleteItem} submitEdit={submitEdit}>
           <label htmlFor='school'>School</label>
           <input type='text' id='school' name='school' placeholder='Columbia University'
             onChange={handleEducationChange} defaultValue={education.school || ''}
@@ -212,9 +249,9 @@ export default function App() {
           />
         </Panel>
 
-        <Panel title={'Experience'} item={experience} setItem={setExperience} 
-        addItem={addExperience} deleteItem={deleteExperienceItem}
-        submitEdit={submitExperienceEdit} itemArray={experienceArray}>
+        <Panel title={'Experience'} item={experience} setItem={setExperience}
+          itemArray={experienceArray} setItemArray={setExperienceArray}
+          addItem={addItem} deleteItem={deleteItem} submitEdit={submitEdit}>
           <label htmlFor='company'>Company Name</label>
           <input type='text' id='company' name='company' placeholder='Google'
             onChange={handleExperienceChange} defaultValue={experience.company || ''}
@@ -246,15 +283,10 @@ export default function App() {
 
 
       <Resume
-        fullName={personalDetails.fullName}
-        email={personalDetails.email}
-        phoneNumber={personalDetails.phoneNumber}
-        address={personalDetails.address}
-        educationArray = {educationArray}
-
-
+        personalDetails={personalDetails}
+        educationArray={educationArray}
+        experienceArray={experienceArray}
       >
-
       </Resume>
     </>
   )
